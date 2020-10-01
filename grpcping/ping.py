@@ -38,8 +38,8 @@ class GrpcPing:
         self._server.start()
         self._cnt = 0
 
-    def __call__(self, target):
-        with grpc.insecure_channel(target) as channel:
+    def __call__(self, dest):
+        with grpc.insecure_channel(dest) as channel:
             try:
                 req = PbParams(src=self._src_addr)
                 stub = gRpcPingServiceStub(channel)
@@ -86,13 +86,13 @@ class GrpcPing:
 def main():
     parser = argparse.ArgumentParser(description='grpcping')
     parser.add_argument('-s', '--src', required=True)
-    parser.add_argument('-t', '--target')
+    parser.add_argument('-d', '--dst')
     parser.add_argument('-i', '--image')
     args = parser.parse_args()
 
     ping = GrpcPing(args.src, args.image)
-    if args.target is not None:
-        ping(args.target)
+    if args.dst is not None:
+        ping(args.dst)
     else:
         while True:
             pass
