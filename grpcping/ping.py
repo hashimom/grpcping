@@ -16,7 +16,10 @@ class GrpcPingGw(gRpcPingServiceServicer):
 
 class GrpcPing:
     def __init__(self, self_port=8888):
-        self._slf_addr = os.uname()[1] + ":" + str(self_port)
+        if os.name == 'posix':
+            self._slf_addr = os.uname()[1] + ":" + str(self_port)
+        else:
+            self._slf_addr = "windows_os:" + str(self_port)
         self._server = grpc.server(futures.ThreadPoolExecutor(max_workers=2))
         add_gRpcPingServiceServicer_to_server(GrpcPingGw(), self._server)
         self._server.add_insecure_port('[::]:' + str(self_port))
